@@ -1,3 +1,10 @@
+# Declaração de autoria
+# Nome: Marcus Vinícius Leite dos Santos
+# Declaro que este código foi desenvolvido por mim, com base no meu próprio
+# entendimento e esforço. Não houve plágio ou cópia integral de terceiros.
+# Ferramentas de IA, quando utilizadas, foram apenas como apoio ao aprendizado
+# e não para a geração integral deste código.
+
 publico = False
 
 while publico == False:
@@ -13,7 +20,7 @@ pessoas_inscritas = 0
 adultos = jovens = universitarios = criancas = 0
 orcamento = 0
 encerramento = False
-cod_encerramento = "admbreak123"
+cod_encerramento = "5020jzp"
 print(f"Cod.Encerramento -> {cod_encerramento}\n\n")
 
 
@@ -67,7 +74,7 @@ while not encerramento:
 
                                 if universitario == False:
                                     adultos += 1
-                                    print("Limite de tentativas atingido: 2. Redirecionando para..\n Categoria: Adulto")
+                                    print("Devido ao limite de tentativas atingido: 2. Redirecionando para..\n Categoria: Adulto")
                                     cobrado = 40
                             case 4:
                                 criancas += 1
@@ -81,30 +88,33 @@ while not encerramento:
                             pagamento = False
 
                             if cliente_crianca == False:
-                                while pagamento == False:
+                                while pagamento == False and tentativas < 3:
                                     validez = False
                                     while validez == False:
                                         recebimento = input("Valor recebido pelo participante: ")
                                         validez = True
                                         for c in recebimento:
-                                            if c not in("1", "2", "3", "4", "5", "6", "7", "8", "9", "0", "."):
+                                            if c not in("1", "2", "3", "4", "5", "6", "7", "8", "9", "0", ".", ","):
                                                 validez = False
 
                                         if validez == False:
                                                 print("Entrada incorreta.")
 
+                                    recebimento = recebimento.replace(",", ".")
                                     recebimento = float(recebimento)
                                     if recebimento > cobrado:
                                         print(f"Troco: R${recebimento - cobrado:.2f}")
                                         pagamento = True
                                     elif recebimento < cobrado:
-                                        print(f"Pagamento insuficiente.")
-                                        tentativas += 1
+                                        tentativas +=1
+                                        print(f"Pagamento insuficiente. Tente mais {3-tentativas} vezes")
                                     else:
                                         pagamento = True
-
-                                print("Pagamento finalizado. Entrada permitida.")
-                                orcamento += cobrado
+                                if pagamento == True:
+                                    print("Pagamento finalizado. Entrada permitida.")
+                                    orcamento += cobrado
+                                else:
+                                    print("Tentativas esgotadas. Retornando ao menu")
                             else:
                                 print("Criança isenta de pagamento. Entrada permitida.")
                         
@@ -125,46 +135,78 @@ while not encerramento:
 
 
     pessoas_inscritas = adultos + jovens + universitarios + criancas
+
 if orcamento <= 300:
     premio = orcamento * 0.1
 elif orcamento > 300 and orcamento <= 700:
     premio = orcamento * 0.15
-elif orcamento < 700:
+elif orcamento > 700:
     premio = orcamento * 0.2
 
 primeiro = premio * 0.5
 segundo = premio * 0.3
 terceiro = premio * 0.2
 
-if adultos*40 > jovens*15 and adultos*40 > universitarios*20:
-    maiscontribuiu = "Adultos"
-elif jovens*15 > adultos*40 and jovens*15 > universitarios*20:
-    maiscontribuiu = "Jovens"
-elif universitarios*20 > adultos*40 and universitarios*20 > jovens*15:
-    maiscontribuiu = "Universitários"
+if pessoas_inscritas != criancas:
+    #DEFINIÇÃO DE QUEM CONTRIBUIU MAIS  
+    if adultos*40 > jovens*15 and adultos*40 > universitarios*20:
+        maiscontribuiu = "Adultos"
+    elif jovens*15 > adultos*40 and jovens*15 > universitarios*20:
+        maiscontribuiu = "Jovens"
+    elif universitarios*20 > adultos*40 and universitarios*20 > jovens*15:
+        maiscontribuiu = "Universitários"
+    elif adultos*40 == jovens*15 and adultos*40 > universitarios*20:
+        maiscontribuiu = "Adultos e Jovens - Empatados"
+    elif adultos*40 == universitarios*20 and adultos*40 > jovens*15:
+        maiscontribuiu = "Adultos e Universitários - Empatados"
+    elif jovens*15 == universitarios*20 and jovens*15 > adultos*40:
+        maiscontribuiu = "Jovens e Universitários - Empatados"
+    elif jovens*15 == universitarios*20 and jovens*15 == adultos*40:
+        maiscontribuiu = "Adultos, Jovens e Universitários - Empatados"
 
-if adultos*40 < jovens*15 and adultos*40 < universitarios*20:
-    menoscontribuiu = "Adultos"
-elif jovens*15 < adultos*40 and jovens*15 < universitarios*20:
-    menoscontribuiu = "Jovens"
-elif universitarios*20 < adultos*40 and universitarios*20 < jovens*15:
-    menoscontribuiu = "Universitários"
+
+
+    #DEFINIÇÃO DE QUEM CONTRIBUIU MENOS
+    if adultos*40 < jovens*15 and adultos*40 < universitarios*20:
+        menoscontribuiu = "Adultos"
+    elif jovens*15 < adultos*40 and jovens*15 < universitarios*20:
+        menoscontribuiu = "Jovens"
+    elif universitarios*20 < adultos*40 and universitarios*20 < jovens*15:
+        menoscontribuiu = "Universitários"
+    elif adultos*40 == jovens*15 and adultos*40 < universitarios*20:
+        menoscontribuiu = "Adultos e Jovens - Empatados"
+    elif adultos*40 == universitarios*20 and adultos*40 < jovens*15:
+        menoscontribuiu = "Adultos e Universitários - Empatados"
+    elif jovens*15 == universitarios*20 and jovens*15 < adultos*40:
+        menoscontribuiu = "Jovens e Universitários - Empatados"
+    elif jovens*15 == universitarios*20 and jovens*15 == adultos*40:
+        menoscontribuiu = "Adultos, Jovens e Universitários - Empatados"
+
+if pessoas_inscritas == 0:
+    menoscontribuiu = maiscontribuiu = "Público Zero - Nenhuma das Categorias"
+
 
 print(f"|ESTATÍSTICAS|\
     \n\nPúblico total: {pessoas_inscritas};\
-    \nArrecadação - Adultos: R${adultos * 40.00};\
-    \nArrecadação - Jovens: R${jovens * 15.00};\
-    \nArrecadação - Universitários com matrícula: R${universitarios * 20.00};\
-    \nValor total arrecadado: R${orcamento};\n\
+      \nVagas restantes: {publico_maximo - pessoas_inscritas};")
+
+if pessoas_inscritas > 0:
+    print(f"\n\nTicket médio - Geral: R${orcamento/pessoas_inscritas};")
+
+    if pessoas_inscritas != criancas:
+        print(f"\nTicket médio - Exceto crianças: R${orcamento/(pessoas_inscritas-criancas)};")
+        
+    print(f"\n\nVagas restantes: {publico_maximo - pessoas_inscritas};")
+
+
+print(f"\nArrecadação - Adultos: R${adultos * 40.00:.2f};\
+    \nArrecadação - Jovens: R${jovens * 15.00:.2f};\
+    \nArrecadação - Universitários com matrícula: R${universitarios * 20.00:.2f};\
+    \nValor total arrecadado: R${orcamento:.2f};\
     \
     \n\nCategoria pagante que mais arrecadou: {maiscontribuiu};\
     \nCategoria pagante que menos arrecadou: {menoscontribuiu};\
     \
-    \n\nTicket médio - Somente pagamentes: R${orcamento/pessoas_inscritas};\
-    \nTicket médio - Geral: R${orcamento/(pessoas_inscritas-criancas)};\
-    \
-    \n\nVagas restantes: {publico_maximo - pessoas_inscritas};\
-    \
-    \n\nPrêmio Total: R${premio};\
-    \nPremiação Individual:\n 1ºLugar:R${primeiro};\n 2ºLugar:R${segundo};\n3ºLugar:{terceiro};")
+    \n\nPrêmio Total: R${premio:.2f};\
+    \nPremiação Individual:\n 1ºLugar:R${primeiro:.2f};\n 2ºLugar:R${segundo:.2f};\n3ºLugar:{terceiro:.2f};")
     
