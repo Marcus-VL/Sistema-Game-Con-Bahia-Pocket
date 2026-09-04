@@ -88,12 +88,20 @@ while not encerramento:
 
                             if cliente_crianca == False:
                                 encerrar_pagamento = False
+                                #VARIAVEL INICIADA PARA O CASO DE ALGUÉM COMPLETAR COM PARTE DO VALOR E LOGO EM SEGUIDA CANCELAR
+                                valor_completado = 0
                                 while pagamento == False and encerrar_pagamento == False:
                                     validez = False
+                                    
                                     while validez == False:
                                         recebimento = input("Valor recebido pelo participante: ")
                                         validez = True
+                                        #Contador de pontos e virgulas
+                                        cont_pv=0
                                         for c in recebimento:
+                                            if c in (",", "."):
+                                                cont_pv+=1
+
                                             if c not in("1", "2", "3", "4", "5", "6", "7", "8", "9", "0", ".", ",") or recebimento[0] in (".", ","):
                                                 
                                             #Se a entrada digitada:
@@ -101,9 +109,11 @@ while not encerramento:
                                             #ou for iniciada por virgula/ponto decimal
                                             #dará erro, portanto será inválida
                                                 validez = False
-                                        if recebimento == "":
+
+                                        if recebimento == "" or cont_pv>1:
                                             #Se a entrada digitada:
                                             #for vazia
+                                            #ou tiver mais de um ponto ou virgula
                                             #dará erro, portanto será inválida
                                             validez = False
 
@@ -123,7 +133,9 @@ while not encerramento:
                                             if opcao_completar.lower() == "completar":
                                                 orcamento += recebimento
                                                 cobrado -= recebimento
+                                                valor_completado += recebimento
                                             elif opcao_completar.lower() == "cancelar":
+                                                orcamento -= valor_completado
                                                 encerrar_pagamento = True
                                             else:
                                                 print("Entrada incorreta.")
@@ -175,7 +187,6 @@ primeiro = premio * 0.5
 segundo = premio * 0.3
 terceiro = premio * 0.2
 
-print(pessoas_inscritas, criancas)
 if pessoas_inscritas != criancas:
     #DEFINIÇÃO DE QUEM CONTRIBUIU MAIS  
     if adultos*40 > jovens*15 and adultos*40 > universitarios*20:
@@ -223,9 +234,7 @@ if pessoas_inscritas > 0:
     print(f"\n\nTicket médio - Geral: R${orcamento/pessoas_inscritas:.2f};")
 
     if pessoas_inscritas != criancas and criancas>0:
-        print(f"\nTicket médio - Exceto crianças: R${orcamento/(pessoas_inscritas-criancas)};")
-        
-    print(f"\nVagas restantes: {publico_maximo - pessoas_inscritas};")
+        print(f"\nTicket médio - Exceto crianças: R${orcamento/(pessoas_inscritas-criancas):.2f};")
 
 
 print(f"\nArrecadação - Adultos: R${adultos * 40.00:.2f};\
