@@ -23,7 +23,8 @@ encerramento = False
 cod_encerramento = "5020jzp"
 print(f"Cod.Encerramento -> {cod_encerramento}\n\n")
 
-
+#MANTÉM O PROGRAMA RODANDO ENQUANTO O OPERADOR
+#NÃO ENCERRAR O PROGRAMA COM O COD. ENCERRAMENTO
 while not encerramento:
     print(f"\n|Menu de Opções|\
            \n1-Inscrição\
@@ -35,6 +36,7 @@ while not encerramento:
         opcao = int(opcao)
         match opcao:
             case 1:
+                #NOVAS INCRIÇÕES SOMENTE CADASTRADAS ENQUANTO HOUVER VAGAS
                 if pessoas_inscritas < publico_maximo:
                     print("\n|CATEGORIAS|\
                         \n1-Adultos - R$40,00\
@@ -49,7 +51,7 @@ while not encerramento:
 
                         cliente_crianca = False
 
-                        'CATEGORIZAÇÃO'
+                        #CATEGORIZAÇÃO
                         match opcao_inscricao:
                             case 1:
                                 categoria = "adulto"
@@ -64,6 +66,8 @@ while not encerramento:
 
                                 matricula = input("Matrícula do Universitário [9 dígitos]: ")
 
+                                #A MATRÍCULA PRECISA TER EXATAMENTE 9 DÍGITOS;,
+                                #caso contrário, o participante é redirecionado para adulto.
                                 if matricula.isdigit() and len(matricula) == 9:
                                     categoria = "universitario"
                                     universitario = True
@@ -82,13 +86,22 @@ while not encerramento:
                                 print("Opção inválida.")
 
 
-                        'ETAPA DE PAGAMENTO'
+                        #ETAPA DE PAGAMENTO
+                        '''
+                        Regras de negocio para essa parte:
+                        - A variavel 'cobrado' diminui conforme o participante paga
+                        o vendedor
+                        - A variavel 'valor_completado' existe para caso alguém ir
+                        completando aos poucos o valor e depois perceber que não vai
+                        conseguir pagar, ela conseguir CANCELAR sem ter o dinheiro 
+                        inserido contabilizado no sistema(dentro do valor de orçamento)
+                        '''
+
                         if opcao_inscricao in (1, 2, 3, 4):
                             pagamento = False
 
                             if cliente_crianca == False:
                                 encerrar_pagamento = False
-                                #VARIAVEL INICIADA PARA O CASO DE ALGUÉM COMPLETAR COM PARTE DO VALOR E LOGO EM SEGUIDA CANCELAR
                                 valor_completado = 0
                                 while pagamento == False and encerrar_pagamento == False:
                                     validez = False
@@ -120,6 +133,7 @@ while not encerramento:
                                         if validez == False:
                                                 print("Entrada incorreta.")
 
+                                    #VIRGULAS SÃO SUBSTITUIDAS, JÁ QUE O PROGRAMA SÓ LÊ DECIMAIS COM PONTOS
                                     recebimento = recebimento.replace(",", ".")
                                     recebimento = float(recebimento)
                                     if recebimento > cobrado:
@@ -143,6 +157,9 @@ while not encerramento:
                                         pagamento = True
                                 if pagamento == True:
                                     print("Pagamento finalizado. Entrada permitida.")
+
+                                    #A categoria só é contabilizada se o pagamento for finalizado
+                                    #Assim, alguém que desistiu de pagar não é somado ao sistema
                                     match categoria:
                                         case "adulto":
                                             adultos +=1
@@ -175,7 +192,13 @@ while not encerramento:
 
 
     
-
+'''
+Arrecadação:       | Percentual destinado ao prêmio:
+                   |
+Até 300,00         | 10% da arrecadação
+De 300,01 a 700,00 | 15% da arrecadação
+Acima de 700,00    | 20% da arrecadação
+'''
 if orcamento <= 300:
     premio = orcamento * 0.1
 elif orcamento > 300 and orcamento <= 700:
@@ -183,9 +206,18 @@ elif orcamento > 300 and orcamento <= 700:
 elif orcamento > 700:
     premio = orcamento * 0.2
 
+
+'''
+PRIMEIRO => 50% DO PRÊMIO
+SEGUNDO => 30% DO PRÊMIO
+TERCEIRO => 20% DO PRÊMIO
+'''
 primeiro = premio * 0.5
 segundo = premio * 0.3
 terceiro = premio * 0.2
+
+
+#Compara a arrecadação de cada categoria e considera os casos de empate
 
 if pessoas_inscritas != criancas:
     #DEFINIÇÃO DE QUEM CONTRIBUIU MAIS  
