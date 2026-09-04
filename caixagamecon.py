@@ -25,9 +25,10 @@ print(f"Cod.Encerramento -> {cod_encerramento}\n\n")
 
 
 while not encerramento:
-    print("\n|Menu de Opções|\
+    print(f"\n|Menu de Opções|\
            \n1-Inscrição\
-           \n2-Encerrar Programa\n")
+           \n2-Encerrar Programa\
+        \n\nVagas restantes: {publico_maximo-pessoas_inscritas}\n")
     opcao = input("Insira qual das opções deseja realizar: ")
 
     if opcao.isdigit():
@@ -48,33 +49,30 @@ while not encerramento:
 
                         cliente_crianca = False
 
+                        'CATEGORIZAÇÃO'
                         match opcao_inscricao:
                             case 1:
-                                adultos += 1
+                                categoria = "adulto"
                                 cobrado = 40
                                 print("Categoria: Adulto")
                             case 2:
-                                jovens += 1
+                                categoria = "jovem"
                                 cobrado = 15
                                 print("Categoria: Jovem")
                             case 3:
-                                tentativas = 0
                                 universitario = False
-                                while tentativas < 2 and universitario == False:
-                                    matricula = input("Matrícula do Universitário [9 dígitos]: ")
 
-                                    if matricula.isdigit() and len(matricula) == 9:
-                                        universitarios += 1
-                                        universitario = True
-                                        print("Categoria: Universitário")
-                                        cobrado = 20
-                                    elif tentativas < 2:
-                                        print("Matrícula inválida. Tente mais uma vez.")
-                                        tentativas +=1
+                                matricula = input("Matrícula do Universitário [9 dígitos]: ")
+
+                                if matricula.isdigit() and len(matricula) == 9:
+                                    categoria = "universitario"
+                                    universitario = True
+                                    print("Categoria: Universitário")
+                                    cobrado = 20
 
                                 if universitario == False:
-                                    adultos += 1
-                                    print("Devido ao limite de tentativas atingido: 2. Redirecionando para..\n Categoria: Adulto")
+                                    categoria = "adulto"
+                                    print("Matrícula inválida ou ausente. Redirecionando para..\n Categoria: Adulto")
                                     cobrado = 40
                             case 4:
                                 criancas += 1
@@ -83,19 +81,31 @@ while not encerramento:
                             case _:
                                 print("Opção inválida.")
 
+
+                        'ETAPA DE PAGAMENTO'
                         if opcao_inscricao in (1, 2, 3, 4):
-                            tentativas = 0
                             pagamento = False
 
                             if cliente_crianca == False:
-                                while pagamento == False and tentativas < 3:
+                                encerrar_pagamento = False
+                                while pagamento == False and encerrar_pagamento == False:
                                     validez = False
                                     while validez == False:
                                         recebimento = input("Valor recebido pelo participante: ")
                                         validez = True
                                         for c in recebimento:
-                                            if c not in("1", "2", "3", "4", "5", "6", "7", "8", "9", "0", ".", ","):
+                                            if c not in("1", "2", "3", "4", "5", "6", "7", "8", "9", "0", ".", ",") or recebimento[0] in (".", ","):
+                                                
+                                            #Se a entrada digitada:
+                                            #não tiver números ou vírgula/ponto decimal 
+                                            #ou for iniciada por virgula/ponto decimal
+                                            #dará erro, portanto será inválida
                                                 validez = False
+                                        if recebimento == "":
+                                            #Se a entrada digitada:
+                                            #for vazia
+                                            #dará erro, portanto será inválida
+                                            validez = False
 
                                         if validez == False:
                                                 print("Entrada incorreta.")
@@ -106,15 +116,31 @@ while not encerramento:
                                         print(f"Troco: R${recebimento - cobrado:.2f}")
                                         pagamento = True
                                     elif recebimento < cobrado:
-                                        tentativas +=1
-                                        print(f"Pagamento insuficiente. Tente mais {3-tentativas} vezes")
+                                        print(f"Pagamento insuficiente. R${cobrado-recebimento:.2f} para completar")
+                                        opcao_completar = ""
+                                        while opcao_completar.lower() not in("completar","cancelar"):
+                                            opcao_completar = input("Deseja completar o valor ou cancelar o pagamento: ")
+                                            if opcao_completar.lower() == "completar":
+                                                orcamento += recebimento
+                                                cobrado -= recebimento
+                                            elif opcao_completar.lower() == "cancelar":
+                                                encerrar_pagamento = True
+                                            else:
+                                                print("Entrada incorreta.")
                                     else:
                                         pagamento = True
                                 if pagamento == True:
                                     print("Pagamento finalizado. Entrada permitida.")
+                                    match categoria:
+                                        case "adulto":
+                                            adultos +=1
+                                        case "jovem":
+                                            jovens+=1
+                                        case "universitario":
+                                            universitarios+=1
                                     orcamento += cobrado
                                 else:
-                                    print("Tentativas esgotadas. Retornando ao menu")
+                                    print("Retornando ao menu")
                             else:
                                 print("Criança isenta de pagamento. Entrada permitida.")
                         
@@ -133,8 +159,10 @@ while not encerramento:
     else:
         print("Entrada incorreta.")
 
-
     pessoas_inscritas = adultos + jovens + universitarios + criancas
+
+
+    
 
 if orcamento <= 300:
     premio = orcamento * 0.1
@@ -147,6 +175,7 @@ primeiro = premio * 0.5
 segundo = premio * 0.3
 terceiro = premio * 0.2
 
+print(pessoas_inscritas, criancas)
 if pessoas_inscritas != criancas:
     #DEFINIÇÃO DE QUEM CONTRIBUIU MAIS  
     if adultos*40 > jovens*15 and adultos*40 > universitarios*20:
@@ -181,8 +210,8 @@ if pessoas_inscritas != criancas:
         menoscontribuiu = "Jovens e Universitários - Empatados"
     elif jovens*15 == universitarios*20 and jovens*15 == adultos*40:
         menoscontribuiu = "Adultos, Jovens e Universitários - Empatados"
-
-if pessoas_inscritas == 0:
+        
+else:
     menoscontribuiu = maiscontribuiu = "Público Zero - Nenhuma das Categorias"
 
 
@@ -191,12 +220,12 @@ print(f"|ESTATÍSTICAS|\
       \nVagas restantes: {publico_maximo - pessoas_inscritas};")
 
 if pessoas_inscritas > 0:
-    print(f"\n\nTicket médio - Geral: R${orcamento/pessoas_inscritas};")
+    print(f"\n\nTicket médio - Geral: R${orcamento/pessoas_inscritas:.2f};")
 
-    if pessoas_inscritas != criancas:
+    if pessoas_inscritas != criancas and criancas>0:
         print(f"\nTicket médio - Exceto crianças: R${orcamento/(pessoas_inscritas-criancas)};")
         
-    print(f"\n\nVagas restantes: {publico_maximo - pessoas_inscritas};")
+    print(f"\nVagas restantes: {publico_maximo - pessoas_inscritas};")
 
 
 print(f"\nArrecadação - Adultos: R${adultos * 40.00:.2f};\
@@ -208,5 +237,5 @@ print(f"\nArrecadação - Adultos: R${adultos * 40.00:.2f};\
     \nCategoria pagante que menos arrecadou: {menoscontribuiu};\
     \
     \n\nPrêmio Total: R${premio:.2f};\
-    \nPremiação Individual:\n 1ºLugar:R${primeiro:.2f};\n 2ºLugar:R${segundo:.2f};\n3ºLugar:{terceiro:.2f};")
+    \nPremiação Individual:\n 1ºLugar:R${primeiro:.2f};\n 2ºLugar:R${segundo:.2f};\n3ºLugar:R${terceiro:.2f};")
     
